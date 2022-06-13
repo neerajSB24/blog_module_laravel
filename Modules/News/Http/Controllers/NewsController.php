@@ -5,6 +5,7 @@ namespace Modules\News\Http\Controllers;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Validator;
 use Modules\Blog\Http\Controllers\BlogController;
 use Modules\News\Entities\News;
 
@@ -45,19 +46,28 @@ class NewsController extends Controller
      */
     public function store(Request $request)
     {
+        $validation = Validator::make($request->all(), [
+           'title' => 'required',
+           'description'=> 'required',
+           'is_published'=> 'required'
+        ]);
+
         $title = $request->json('title');
         $description = $request->json('description');
         $is_published = $request->json('is_published');
 
-        if(isset($title) && isset($description)){
+        if($validation->passes())
+        {
             $news = new News();
             $news->title  = $title;
             $news->description = $description;
             $news->is_published = $is_published;
             $news->save();
             return response()->json(['status'=>1,'message'=>'News added successfully.'], 200);
-        }else{
-            return response()->json(['status'=>0,'message'=>'Failed to save news.'], 204);
+        }
+        else
+        {
+            return response()->json(['status'=>0,'message'=>$validation->errors()], 200);
         }
     }
 
@@ -95,11 +105,17 @@ class NewsController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $validation = Validator::make($request->all(), [
+            'title' => 'required',
+            'description'=> 'required',
+            'is_published'=> 'required'
+        ]);
+
         $title = $request->json('title');
         $description = $request->json('description');
         $is_published = $request->json('is_published');
 
-        if(isset($title) && isset($description)){
+        if($validation->passes()){
             $news = News::find($id);
             $news->title  = $title;
             $news->description = $description;
@@ -107,7 +123,7 @@ class NewsController extends Controller
             $news->update();
             return response()->json(['status'=>1, 'message'=>'News updated successfully.'], 200);
         }else{
-            return response()->json(['status'=>0,'message'=>'Failed to update news.'], 204);
+            return response()->json(['status'=>0,'message'=>$validation->errors()], 200);
         }
     }
 

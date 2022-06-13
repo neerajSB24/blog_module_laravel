@@ -5,6 +5,7 @@ namespace Modules\Blog\Http\Controllers;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Validator;
 use Modules\Blog\Entities\Blog;
 use Modules\News\Http\Controllers\NewsController;
 
@@ -41,17 +42,23 @@ class BlogController extends Controller
      */
     public function store(Request $request)
     {
+
+        $validation = Validator::make($request->all(), [
+            'title' => 'required',
+            'description'=> 'required'
+        ]);
+
         $title = $request->json('title');
         $description = $request->json('description');
 
-        if (isset($title) && isset($description)) {
+        if($validation->passes()){
             $blog = new Blog();
             $blog->title = $title;
             $blog->description = $description;
             $blog->save();
             return response()->json(['status' => 1, 'message' => 'Blog added successfully.'], 200);
         } else {
-            return response()->json(['status' => 0, 'message' => 'Failed to save blog.'], 204);
+            return response()->json(['status' => 0, 'message' => $validation->errors()], 200);
         }
     }
 
@@ -92,18 +99,24 @@ class BlogController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validation = Validator::make($request->all(), [
+            'title' => 'required',
+            'description'=> 'required'
+        ]);
+
         $title = $request->json('title');
         $description = $request->json('description');
 
-        if (isset($title) && isset($description)) {
+
+        if ($validation->passes())
+        {
             $blog = Blog::find($id);
             $blog->title = $title;
             $blog->description = $description;
             $blog->update();
             return response()->json(['status' => 1, 'message' => 'Blog updated successfully.'], 200);
         } else {
-            return response()->json(['status' => 0, 'message' => 'Failed to update blog.'], 204);
+            return response()->json(['status' => 0, 'message' => $validation->errors()], 200);
         }
     }
 
