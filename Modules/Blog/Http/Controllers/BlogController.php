@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Validator;
 use Modules\Blog\Entities\Blog;
+use Modules\Blog\Http\Requests\BlogPostRequest;
 use Modules\News\Http\Controllers\NewsController;
 
 class BlogController extends Controller
@@ -40,26 +41,13 @@ class BlogController extends Controller
      * @param Request $request
      * @return Renderable
      */
-    public function store(Request $request)
+
+
+    public function store(BlogPostRequest $request)
     {
-
-        $validation = Validator::make($request->all(), [
-            'title' => 'required',
-            'description'=> 'required'
-        ]);
-
-        $title = $request->json('title');
-        $description = $request->json('description');
-
-        if($validation->passes()){
-            $blog = new Blog();
-            $blog->title = $title;
-            $blog->description = $description;
-            $blog->save();
-            return response()->json(['status' => 1, 'message' => 'Blog added successfully.'], 200);
-        } else {
-            return response()->json(['status' => 0, 'message' => $validation->errors()], 200);
-        }
+        $input = $request->all();
+        $blog = Blog::create($input);
+        return response()->json(['status'=>1,'message'=>'Blog added successfully.'], 200);
     }
 
     /**

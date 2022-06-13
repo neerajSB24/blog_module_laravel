@@ -8,6 +8,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Validator;
 use Modules\Blog\Http\Controllers\BlogController;
 use Modules\News\Entities\News;
+use Modules\News\Http\Requests\NewsPostRequest;
 
 class NewsController extends Controller
 {
@@ -44,31 +45,11 @@ class NewsController extends Controller
      * @param Request $request
      * @return Renderable
      */
-    public function store(Request $request)
+    public function store(NewsPostRequest $request)
     {
-        $validation = Validator::make($request->all(), [
-           'title' => 'required',
-           'description'=> 'required',
-           'is_published'=> 'required'
-        ]);
-
-        $title = $request->json('title');
-        $description = $request->json('description');
-        $is_published = $request->json('is_published');
-
-        if($validation->passes())
-        {
-            $news = new News();
-            $news->title  = $title;
-            $news->description = $description;
-            $news->is_published = $is_published;
-            $news->save();
-            return response()->json(['status'=>1,'message'=>'News added successfully.'], 200);
-        }
-        else
-        {
-            return response()->json(['status'=>0,'message'=>$validation->errors()], 200);
-        }
+        $input = $request->all();
+        $news = News::create($input);
+        return response()->json(['status'=>1,'message'=>'News added successfully.'], 200);
     }
 
     /**
