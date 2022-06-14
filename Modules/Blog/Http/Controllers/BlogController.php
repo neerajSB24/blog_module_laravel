@@ -8,6 +8,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Validator;
 use Modules\Blog\Entities\Blog;
 use Modules\Blog\Http\Requests\BlogPostRequest;
+use Modules\Blog\Jobs\SendEmailJob;
 use Modules\News\Http\Controllers\NewsController;
 
 class BlogController extends Controller
@@ -135,6 +136,12 @@ class BlogController extends Controller
         } else {
             return response()->json(['status' => 0, 'message' => 'something went wrong.'], 200);
         }
+    }
+
+    public function newsJob()
+    {
+        $details['email'] = 'neeraj@square-bits.com';
+        dispatch(new SendEmailJob($details));
     }
 
 }

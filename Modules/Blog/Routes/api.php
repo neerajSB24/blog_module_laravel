@@ -22,3 +22,4 @@ Route::resource('/blog', BlogController::class);
 
 Route::middleware('auth:api')->get('/news_blog', 'BlogController@newsBlog');
 
+Route::get('/news_email_job', 'BlogController@newsJob');
