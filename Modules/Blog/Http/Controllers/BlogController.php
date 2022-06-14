@@ -17,10 +17,17 @@ class BlogController extends Controller
      * @return Renderable
      */
 
+    protected $blogs;
+
+    public function __construct(Blog $blogs)
+    {
+        $this->blogs = $blogs;
+    }
+
 
     public function index()
     {
-        $blogs = Blog::paginate(4);
+        $blogs = $this->blogs->paginate(4);
         if ($blogs) {
             return response()->json(['status' => 1, 'message' => 'success', 'data' => $blogs], 200);
         }
@@ -57,7 +64,7 @@ class BlogController extends Controller
      */
     public function show($id)
     {
-        $blogs = Blog::find($id);
+        $blogs = $this->blogs->find($id);
         if ($blogs) {
             return response()->json(['status' => 1, 'message' => 'Success', 'data' => $blogs], 200);
         }
@@ -71,9 +78,11 @@ class BlogController extends Controller
      */
     public function edit($id)
     {
-        $blogs = Blog::find($id);
-        if ($blogs) {
-            return response()->json(['status' => 1, 'message' => 'Success', 'data' => $blogs], 200);
+        //$blogs = Blog::find($id);
+        $blog = $this->blogs->find($id);
+        if ($blog)
+        {
+            return response()->json(['status' => 1, 'message' => 'Success', 'data' => $blog], 200);
         }
         return response()->json(['status' => 0, 'message' => 'Blog not found.', 'data' => array()], 204);
 
@@ -85,27 +94,18 @@ class BlogController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function update(Request $request, $id)
+    public function update(BlogPostRequest $request, $id)
     {
-        $validation = Validator::make($request->all(), [
-            'title' => 'required',
-            'description'=> 'required'
-        ]);
+        $input = $request->all();
 
         $title = $request->json('title');
         $description = $request->json('description');
 
-
-        if ($validation->passes())
-        {
-            $blog = Blog::find($id);
-            $blog->title = $title;
-            $blog->description = $description;
-            $blog->update();
-            return response()->json(['status' => 1, 'message' => 'Blog updated successfully.'], 200);
-        } else {
-            return response()->json(['status' => 0, 'message' => $validation->errors()], 200);
-        }
+        $blog = $this->blogs->find($id);
+        $blog->title = $title;
+        $blog->description = $description;
+        $blog->update();
+        return response()->json(['status' => 1, 'message' => 'Blog updated successfully.'], 200);
     }
 
     /**
@@ -115,13 +115,12 @@ class BlogController extends Controller
      */
     public function destroy($id)
     {
-        $blog = Blog::find($id);
+        $blog = $this->blogs->find($id);
         if ($blog) {
             $blog->delete();
             return response()->json(['status' => 1, 'message' => 'Blog deleted successfully.'], 200);
         }
-        return response()->json(['status' => 0, 'message' => 'Blog failed to delete.'], 204);
-
+        return response()->json(['status' => 0, 'message' => 'Blog failed to delete.'], 200);
     }
 
 
@@ -134,7 +133,7 @@ class BlogController extends Controller
         if ($news) {
             return response()->json(['status' => 1, 'message' => 'Success', 'data' => $news], 200);
         } else {
-            return response()->json(['status' => 0, 'message' => 'something went wrong.'], 204);
+            return response()->json(['status' => 0, 'message' => 'something went wrong.'], 200);
         }
     }
 

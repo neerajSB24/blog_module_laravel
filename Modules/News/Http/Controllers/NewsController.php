@@ -16,10 +16,17 @@ class NewsController extends Controller
      * Display a listing of the resource.
      * @return Renderable
      */
+
+    protected $news;
+
+    public function __construct(News $news)
+    {
+        $this->news = $news;
+    }
+
     public function index()
     {
-        //return view('news::index');
-        $news = News::paginate(4);
+        $news = $this->news->paginate(4);
 
         $blogsModule = new BlogController();
         $blog = $blogsModule->show(1);
@@ -49,6 +56,7 @@ class NewsController extends Controller
     {
         $input = $request->all();
         $news = News::create($input);
+
         return response()->json(['status'=>1,'message'=>'News added successfully.'], 200);
     }
 
@@ -59,7 +67,7 @@ class NewsController extends Controller
      */
     public function show($id)
     {
-        $news = News::find($id);
+        $news = $this->blogs->find($id);
         if($news)
         {
             return response()->json(['status'=>1,'message'=>'Success', 'data'=>$news], 200);
@@ -84,28 +92,20 @@ class NewsController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function update(Request $request, $id)
+    public function update(NewsPostRequest $request, $id)
     {
-        $validation = Validator::make($request->all(), [
-            'title' => 'required',
-            'description'=> 'required',
-            'is_published'=> 'required'
-        ]);
+        $input = $request->all();
 
         $title = $request->json('title');
         $description = $request->json('description');
         $is_published = $request->json('is_published');
 
-        if($validation->passes()){
-            $news = News::find($id);
-            $news->title  = $title;
-            $news->description = $description;
-            $news->is_published = $is_published;
-            $news->update();
-            return response()->json(['status'=>1, 'message'=>'News updated successfully.'], 200);
-        }else{
-            return response()->json(['status'=>0,'message'=>$validation->errors()], 200);
-        }
+        $news = $this->blogs->find($id);
+        $news->title  = $title;
+        $news->description = $description;
+        $news->is_published = $is_published;
+        $news->update();
+        return response()->json(['status'=>1, 'message'=>'News updated successfully.'], 200);
     }
 
     /**
@@ -115,7 +115,7 @@ class NewsController extends Controller
      */
     public function destroy($id)
     {
-        $news = News::find($id);
+        $news = $this->news->find($id);
         if($news)
         {
             $news->delete();
