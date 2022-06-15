@@ -159,4 +159,16 @@ class NewsController extends Controller
         }
     }
 
+
+    public function getBlogById($id)
+    {
+        $blog = $this->blog->blogById($id);
+        if($blog)
+        {
+            return response()->json(['status'=>1,'message'=>'Success', 'data'=>$blog], 200);
+        }
+        return response()->json(['status'=>0,'message'=>'News details not found.', 'data'=>array()], 200);
+        //return view('news::show');
+    }
+
 }

@@ -18,4 +18,13 @@ class Blog extends Model
     {
         return \Modules\Blog\Database\factories\BlogFactory::new();
     }
+
+     public function blogById($id)
+     {
+         $blog = Blog::find($id);
+         if($blog){
+             return $blog;
+         }
+         return false;
+     }
 }

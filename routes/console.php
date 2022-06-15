@@ -17,3 +17,10 @@ use Illuminate\Support\Facades\Artisan;
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
+
+Artisan::command('check:blog', function () {
+    $blogs = \Modules\Blog\Entities\Blog::all();
+    foreach ($blogs as $blog){
+        $this->comment($blog);
+    }
+})->purpose('Display an inspiring quote');

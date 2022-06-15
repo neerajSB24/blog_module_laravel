@@ -20,6 +20,7 @@ Route::resource('/news', NewsController::class);
 //Route::get('news/get_blog', 'NewsController@blog');
 Route::get('/view_blog', 'NewsController@blog');
 Route::get('/blog_list', 'NewsController@blogList');
+Route::get('/get_blog_by_id/{id}', 'NewsController@getBlogById');
 
 
 //Route::namespace('news')->group(function() {
