@@ -2,7 +2,7 @@
 
 namespace Modules\News\Emails;
 
-use     Illuminate\Bus\Queueable;
+use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;

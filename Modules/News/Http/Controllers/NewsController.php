@@ -6,6 +6,7 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Validator;
+use Modules\Blog\Entities\Blog;
 use Modules\Blog\Http\Controllers\BlogController;
 use Modules\News\Entities\News;
 use Modules\News\Http\Requests\NewsPostRequest;
@@ -19,9 +20,10 @@ class NewsController extends Controller
 
     protected $news;
 
-    public function __construct(News $news)
+    public function __construct(News $news, Blog $blog)
     {
         $this->news = $news;
+        $this->blog = $blog;
     }
 
     public function index()
@@ -127,12 +129,13 @@ class NewsController extends Controller
 
     public function blog()
     {
-        $blogsModule = new BlogController();
+        $blogsModule = new BlogController($this->blog);
         $blog = $blogsModule->show(1);
 
         if($blog)
         {
-            return view('blog::create');
+            //return view('blog::create');
+            return view('news::create');
         }
         else
         {
@@ -142,7 +145,7 @@ class NewsController extends Controller
 
     public function blogList()
     {
-        $blogsModule = new BlogController();
+        $blogsModule = new BlogController($this->blog);
         //$blog = $blogsModule->show(1);
         $blog = $blogsModule->index();
 

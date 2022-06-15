@@ -9,6 +9,7 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 //
 //Route::prefix('blog')->group(function() {
 //    Route::get('/', 'BlogController@index');
@@ -18,3 +19,8 @@
 /*Route::prefix('admin')->group(function () {
     Route::resource('blog', BlogController::class);
 });*/
+
+
+Route::prefix('blog')->group(function() {
+    Route::get('/get_news_component', 'BlogController@create');
+});

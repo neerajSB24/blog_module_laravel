@@ -16,9 +16,12 @@ class SendEmailTest extends Mailable
      *
      * @return void
      */
-    public function __construct()
+
+    protected $details;
+
+    public function __construct($details)
     {
-        //
+        $this->details= $details;
     }
 
     /**

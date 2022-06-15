@@ -6,4 +6,7 @@
     <p>
         Create Module: {!! config('blog.name') !!}
     </p>
+
+
+    <x-alert type="success" message="component from news" class="mt-4" />
 @endsection

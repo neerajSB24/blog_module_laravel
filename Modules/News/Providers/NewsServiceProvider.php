@@ -4,6 +4,8 @@ namespace Modules\News\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
+use Illuminate\Support\Facades\Blade;
+use Modules\News\View\Components\Alert;
 
 class NewsServiceProvider extends ServiceProvider
 {
@@ -28,6 +30,8 @@ class NewsServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'Database/Migrations'));
+
+        Blade::component('alert', Alert::class);
     }
 
     /**
